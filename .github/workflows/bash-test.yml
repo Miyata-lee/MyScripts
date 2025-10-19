@@ -17,7 +17,7 @@ jobs:
         uses: appleboy/scp-action@v0.1.5
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: ec2-user
+          username: ${{ secrets.EC2_USER}}
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "automation.sh"
           target: "/home/ec2-user/"
@@ -26,7 +26,7 @@ jobs:
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: ec2-user
+          username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             chmod +x /home/ec2-user/automation.sh
