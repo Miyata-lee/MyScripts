@@ -1,4 +1,4 @@
-name: Bash Script CI/CD Test
+name: Deploy Automation Script
 
 on:
   push:
@@ -10,16 +10,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Run Bash Script on EC2
+      - name: Copy automation script to EC2
+        uses: appleboy/scp-action@v0.1.5
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "automation.sh"
+          target: "/home/ec2-user/"
+
+      - name: Run automation script on EC2
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
-          port: 22
           script: |
-            chmod +x ~/automation.sh
-            ~/automation.sh
+            chmod +x /home/ec2-user/automation.sh
+            /home/ec2-user/automation.sh
